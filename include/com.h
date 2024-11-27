@@ -4,16 +4,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Node {
+typedef struct Node
+{
     int data;
-    struct Node* next;
-    struct Node* prev;
+    struct Node *next;
+    struct Node *prev;
 } Node;
 
-void Sort(Node** head_ref);
-Node* Gen(int count);
-Node* Reserve();
-void ListOut(Node* start, int start_node, int end_node);
-void ListFree(Node* head);
+void Sort(Node **head_ref);
+Node *Gen(int count);
+Node *Reserve();
+void ListOut(Node *start, int start_node, int end_node);
+void ListFree(Node *head);
 
 #endif
