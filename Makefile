@@ -1,27 +1,34 @@
+CC = gcc
+CFLAGS = -Wall -pthread -Iinclude -O2
+
 SEQ_TARGET = seq
-COM_TARGET = com
 PAR_TARGET = par
+COM_TARGET = com
 
-$(SEQ_TARGET): $(SEQ_TARGET).o $(COM_TARGET).o
-	gcc -o $(SEQ_TARGET).exe $(SEQ_TARGET).o $(COM_TARGET).o
+SEQ_OBJ = src/seq.o
+PAR_OBJ = src/par.o
+COM_OBJ = src/com.o
 
-$(SEQ_TARGET).o: src/$(SEQ_TARGET).c include/$(SEQ_TARGET).h
-	gcc -c -o $(SEQ_TARGET).o src/$(SEQ_TARGET).c
+$(SEQ_TARGET): $(SEQ_OBJ) $(COM_OBJ)
+	$(CC) $(CFLAGS) -o $(SEQ_TARGET) $(SEQ_OBJ) $(COM_OBJ)
 
-$(PAR_TARGET).exe: $(PAR_TARGET).o $(COM_TARGET).o
-	gcc -o $(PAR_TARGET).exe $(PAR_TARGET).o $(COM_TARGET).o
+src/seq.o: src/seq.c include/seq.h include/com.h
+	$(CC) $(CFLAGS) -c -o src/seq.o src/seq.c
 
-$(PAR_TARGET).o: src/$(PAR_TARGET).c include/$(PAR_TARGET).h
-	gcc -c -o $(PAR_TARGET).o src/$(PAR_TARGET).c
+$(PAR_TARGET): $(PAR_OBJ) $(COM_OBJ)
+	$(CC) $(CFLAGS) -o $(PAR_TARGET) $(PAR_OBJ) $(COM_OBJ)
 
-$(COM_TARGET).o: src/$(COM_TARGET).c include/$(SEQ_TARGET).h
-	gcc -c -o $(COM_TARGET).o src/$(COM_TARGET).c
+src/par.o: src/par.c include/par.h include/com.h
+	$(CC) $(CFLAGS) -c -o src/par.o src/par.c
+
+$(COM_OBJ): src/com.c include/com.h
+	$(CC) $(CFLAGS) -c -o src/com.o src/com.c
 
 run-seq: $(SEQ_TARGET)
-	$(SEQ_TARGET).exe
+	./$(SEQ_TARGET)
 
 run-par: $(PAR_TARGET)
-	$(PAR_TARGET).exe
+	./$(PAR_TARGET)
 
 clean:
-	del *.exe *.o
+	del src\*.o $(SEQ_TARGET) $(PAR_TARGET)
