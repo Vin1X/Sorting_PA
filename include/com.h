@@ -9,7 +9,7 @@ typedef struct Node
 {
     int data;
     struct Node *next;
-    struct Node *prev;
+    struct Node *last;
 } Node;
 
 void Sort(Node **head_ref);

@@ -21,7 +21,7 @@ void Sort(Node **head_ref)
     slow->next = NULL;
     if (mid)
     {
-        mid->prev = NULL;
+        mid->last = NULL;
     }
 
     Sort(&head);
@@ -38,13 +38,13 @@ void Sort(Node **head_ref)
         if (left->data < right->data)
         {
             tail->next = left;
-            left->prev = tail;
+            left->last = tail;
             left = left->next;
         }
         else
         {
             tail->next = right;
-            right->prev = tail;
+            right->last = tail;
             right = right->next;
         }
         tail = tail->next;
@@ -53,13 +53,13 @@ void Sort(Node **head_ref)
     tail->next = (left) ? left : right;
     if (tail->next)
     {
-        tail->next->prev = tail;
+        tail->next->last = tail;
     }
 
     Node *sorted_head = dummy.next;
     if (sorted_head)
     {
-        sorted_head->prev = NULL;
+        sorted_head->last = NULL;
     }
     *head_ref = sorted_head;
 }
@@ -79,7 +79,7 @@ Node *Gen(int count)
         else
         {
             end->next = node;
-            node->prev = end;
+            node->last = end;
             end = node;
         }
     }
@@ -91,7 +91,7 @@ Node *Reserve()
     Node *node = (Node *)malloc(sizeof(Node));
     node->data = RandZ(1 + RandZ(2) % 9);
     node->next = NULL;
-    node->prev = NULL;
+    node->last = NULL;
     return node;
 }
 

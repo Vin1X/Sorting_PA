@@ -7,7 +7,10 @@
 
 #define LOG_FILE "par.log"
 #define NODE_COUNT 10000000
-#define NUM_THREADS 4
+#define THREAD_COUNT 4
+
+FILE *log_file;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 typedef struct
 {
@@ -16,5 +19,6 @@ typedef struct
 } ThreadData;
 
 int main();
+Node *merge_lists(Node *list1, Node *list2);
 
 #endif
