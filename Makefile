@@ -8,7 +8,7 @@ $(SEQ_TARGET): $(SEQ_TARGET).o $(COM_TARGET).o
 $(SEQ_TARGET).o: src/$(SEQ_TARGET).c include/$(SEQ_TARGET).h
 	gcc -c -o $(SEQ_TARGET).o src/$(SEQ_TARGET).c
 
-$(PAR_TARGET).exe: $(PAR_TARGET).o $(COM_TARGET).o
+$(PAR_TARGET): $(PAR_TARGET).o $(COM_TARGET).o
 	gcc -o $(PAR_TARGET).exe $(PAR_TARGET).o $(COM_TARGET).o
 
 $(PAR_TARGET).o: src/$(PAR_TARGET).c include/$(PAR_TARGET).h
@@ -24,4 +24,4 @@ run-par: $(PAR_TARGET)
 	$(PAR_TARGET).exe
 
 clean:
-	del *.exe *.o
+	del *.exe *.o *.log
