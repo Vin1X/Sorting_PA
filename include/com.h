@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "rand_z.h"
 
 typedef struct Node
 {

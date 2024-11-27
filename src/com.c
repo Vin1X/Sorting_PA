@@ -67,20 +67,20 @@ void Sort(Node **head_ref)
 Node *Gen(int count)
 {
     Node *head = NULL;
-    Node *tail = NULL;
+    Node *end = NULL;
     for (int i = 0; i < count; i++)
     {
-        Node *newNode = Reserve();
+        Node *node = Reserve();
         if (!head)
         {
-            head = newNode;
-            tail = head;
+            head = node;
+            end = head;
         }
         else
         {
-            tail->next = newNode;
-            newNode->prev = tail;
-            tail = newNode;
+            end->next = node;
+            node->prev = end;
+            end = node;
         }
     }
     return head;
@@ -88,47 +88,47 @@ Node *Gen(int count)
 
 Node *Reserve()
 {
-    Node *newNode = (Node *)malloc(sizeof(Node));
-    newNode->data = rand();
-    newNode->next = NULL;
-    newNode->prev = NULL;
-    return newNode;
+    Node *node = (Node *)malloc(sizeof(Node));
+    node->data = RandZ(1);
+    node->next = NULL;
+    node->prev = NULL;
+    return node;
 }
 
-void ListOut(Node *start, int start_node, int end_node)
+void ListOut(Node *head, int start_node, int end_node)
 {
-    if (!start)
+    if (!head)
     {
         return;
+    }
 
-        int total_nodes = 0;
-        Node *current = start;
-        while (current)
-        {
-            total_nodes++;
-            current = current->next;
-        }
+    int total_nodes = 0;
+    Node *current = head;
+    while (current)
+    {
+        total_nodes++;
+        current = current->next;
+    }
 
-        if (start_node < 1 || start_node > total_nodes)
-        {
-            start_node = 1;
-        }
-        if (end_node < 1 || end_node > total_nodes)
-        {
-            end_node = total_nodes;
-        }
+    if (start_node < 1 || start_node > total_nodes)
+    {
+        start_node = 1;
+    }
+    if (end_node < 1 || end_node > total_nodes)
+    {
+        end_node = total_nodes;
+    }
 
-        current = start;
-        int current_index = 1;
-        while (current && current_index <= end_node)
+    current = head;
+    int index = 1;
+    while (current && index <= end_node)
+    {
+        if (index >= start_node)
         {
-            if (current_index >= start_node)
-            {
-                printf("Node %d: %d\n", current_index, current->data);
-            }
-            current = current->next;
-            current_index++;
+            printf("Node %d: %d\n", index, current->data);
         }
+        current = current->next;
+        index++;
     }
 }
 

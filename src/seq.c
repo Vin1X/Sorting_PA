@@ -19,7 +19,8 @@ int main()
     fprintf(log_file, "Sort duration: %.2f seconds\n", duration);
     fclose(log_file);
 
-    ListOut(list, 0, NODE_COUNT);
+    ListOut(list, 0, 10);
+    ListOut(list, NODE_COUNT - 10, NODE_COUNT);
 
     ListFree(list);
 

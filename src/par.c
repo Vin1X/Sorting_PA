@@ -53,12 +53,18 @@ int main()
         pthread_join(threads[i], NULL);
     }
 
-    Node *merged = NULL;
-    for (int i = 0; i < NUM_THREADS; i++)
+    Node *merged = sublists[0];
+    for (int i = 1; i < NUM_THREADS; i++)
     {
-        Node *dummy = NULL;
-        Sort(&dummy);
-        merged = dummy;
+        Sort(&merged);
+        merged = merged->next;
+        Node *temp = merged;
+        while (temp->next)
+        {
+            temp = temp->next;
+        }
+        temp->next = sublists[i];
+        sublists[i]->prev = temp;
     }
 
     clock_t end_time = clock();
@@ -70,7 +76,8 @@ int main()
     fprintf(log_file, "Sort duration: %.2f seconds\n", duration);
     fclose(log_file);
 
-    ListOut(merged, 0, NODE_COUNT);
+    ListOut(merged, 0, 10);
+    ListOut(merged, NODE_COUNT - 10, NODE_COUNT);
 
     ListFree(merged);
 
