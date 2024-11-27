@@ -54,7 +54,6 @@ void Sort(Node** head_ref) {
     *head_ref = sorted_head;
 }
 
-
 Node* Gen(int count) {
     Node* head = NULL;
     Node* tail = NULL;
@@ -81,16 +80,33 @@ Node* Reserve() {
 }
 
 void ListOut(Node* start, int start_node, int end_node) {
-    Node* node = start;
-    int i = 0;
-    while (node) {
-        if (i >= start_node && i <= end_node) {
-            // printf("%d ", node->data);
-        }
-        node = node->next;
-        i++;
+    if (!start) {
+        return; 
+
+    int total_nodes = 0;
+    Node* current = start;
+    while (current) {
+        total_nodes++;
+        current = current->next;
     }
-    // printf("\n\n");
+
+    if (start_node < 1 || start_node > total_nodes) {
+        start_node = 1;
+    }
+    if (end_node < 1 || end_node > total_nodes) {
+        end_node = total_nodes; 
+    }
+
+    current = start;
+    int current_index = 1; 
+    while (current && current_index <= end_node) {
+        if (current_index >= start_node) {
+            printf("Knoten %d: %d\n", current_index, current->data);
+        }
+        current = current->next;
+        current_index++;
+        }
+    }
 }
 
 void ListFree(Node* head) {
