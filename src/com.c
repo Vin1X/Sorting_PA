@@ -89,7 +89,7 @@ Node *Gen(int count)
 Node *Reserve()
 {
     Node *node = (Node *)malloc(sizeof(Node));
-    node->data = RandZ(1);
+    node->data = RandZ(1 + RandZ(2) % 9);
     node->next = NULL;
     node->prev = NULL;
     return node;
