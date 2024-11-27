@@ -1,22 +1,35 @@
 #include "../include/par.h"
 
-void *ParallelSort(void *arg)
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+FILE *log_file;
+
+void *ThrdFunc(void *arg)
 {
     ThreadData *data = (ThreadData *)arg;
-    Sort(data->head_ref);
+
+    clock_t start_time = clock();
+    Sort(&data->head);
+    clock_t end_time = clock();
+    double duration = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+
+    // ListOut(data->head, 0, NODE_COUNT);
+    pthread_mutex_lock(&mutex);
+    fprintf(log_file, "Thread id: %d\n", data->id);
+    fprintf(log_file, "Sort duration: %.2f seconds\n", duration);
+    pthread_mutex_unlock(&mutex);
     pthread_exit(NULL);
 }
 
 int main()
 {
-    FILE *log_file = fopen(LOG_FILE, "w");
+    log_file = fopen(LOG_FILE, "w");
 
     printf("Generating list with %d nodes...\n", NODE_COUNT);
     Node *list = Gen(NODE_COUNT);
+    Node *sublists[NUM_THREADS];
 
     clock_t start_time = clock();
 
-    Node *sublists[NUM_THREADS];
     int sublist_size = NODE_COUNT / NUM_THREADS;
 
     Node *current = list;
@@ -42,10 +55,9 @@ int main()
 
     for (int i = 0; i < NUM_THREADS; i++)
     {
-        thread_data[i].head_ref = &sublists[i];
-        thread_data[i].thread_id = i;
-        thread_data[i].num_threads = NUM_THREADS;
-        pthread_create(&threads[i], NULL, ParallelSort, &thread_data[i]);
+        thread_data[i].head = sublists[i];
+        thread_data[i].id = i;
+        pthread_create(&threads[i], NULL, ThrdFunc, &thread_data[i]);
     }
 
     for (int i = 0; i < NUM_THREADS; i++)
@@ -53,20 +65,24 @@ int main()
         pthread_join(threads[i], NULL);
     }
 
-    Node *merged = sublists[0];
-    for (int i = 1; i < NUM_THREADS; i++)
+    Node *merged = thread_data[0].head;
+    Node *tail = merged;
+    while (tail->next)
     {
-        Sort(&merged);
-        merged = merged->next;
-        Node *temp = merged;
-        while (temp->next)
-        {
-            temp = temp->next;
-        }
-        temp->next = sublists[i];
-        sublists[i]->prev = temp;
+        tail = tail->next;
     }
 
+    for (int i = 1; i < NUM_THREADS; i++)
+    {
+        tail->next = sublists[i];
+        sublists[i]->prev = tail;
+
+        while (tail->next)
+        {
+            tail = tail->next;
+        }
+    }
+    Sort(&merged);
     clock_t end_time = clock();
 
     double duration = (double)(end_time - start_time) / CLOCKS_PER_SEC;
@@ -76,10 +92,11 @@ int main()
     fprintf(log_file, "Sort duration: %.2f seconds\n", duration);
     fclose(log_file);
 
-    ListOut(merged, 0, 10);
-    ListOut(merged, NODE_COUNT - 10, NODE_COUNT);
+    // ListOut(merged, 0, 10);
+    // ListOut(merged, NODE_COUNT - 100, NODE_COUNT - 10);
 
     ListFree(merged);
+    free();
 
     return EXIT_SUCCESS;
 }

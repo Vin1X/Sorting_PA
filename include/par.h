@@ -11,9 +11,8 @@
 
 typedef struct
 {
-    Node **head_ref;
-    int thread_id;
-    int num_threads;
+    Node *head;
+    int id;
 } ThreadData;
 
 int main();
