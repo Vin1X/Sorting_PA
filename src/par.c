@@ -4,8 +4,8 @@
 /**
  * This function is being passed to each thread which processes a sublist
  *
- * Parmeter:
- *  *arg being the sublist
+ * Parameter:
+ *  void *arg Being the sublist
  */
 void *ThrdFunc(void *arg)
 {
@@ -112,39 +112,55 @@ int main()
     return EXIT_SUCCESS;
 }
 
+/**
+ * This function merges/sorts 2 double chained linked lists.
+ * For ease we make a dummy of type Node as a placeholder
+ * and current with a pointer on the dummy Node.
+ * We also ensure that the double linked list stays consistent.
+ * 
+ * Parameters:
+ *    Node *list1 Pointer to sorted/unsorted list
+ *    Node *list2 Pointer to sorted/unsorted list
+ *
+ * Returns:
+ *    Node* Pointer to the head of the merged list
+ */
 Node *merge_lists(Node *list1, Node *list2)
 {
-    Node dummy;
-    Node *tail = &dummy;
-    dummy.next = NULL;
+    Node dummy; // Placeholder
+    Node *current = &dummy; // Pointer to dummy node
+    dummy.next = NULL; // Make sure next node is empty
 
+	// This runs until one or both lists are empty
     while (list1 && list2)
     {
+		// Check which node has the smaller or equal value and attach it to the merged list
         if (list1->data <= list2->data)
         {
-            tail->next = list1;
-            list1->last = tail;
-            list1 = list1->next;
+            current->next = list1; // Add node to placeholder
+            list1->last = current; // Update last node to placeholder
+            list1 = list1->next; // Point to next node
         }
         else
         {
-            tail->next = list2;
-            list2->last = tail;
-            list2 = list2->next;
+            current->next = list2; // Add node to placeholder
+            list2->last = current; // Update last node to placeholder
+            list2 = list2->next; // Point to next node
         }
-        tail = tail->next;
+        current = current->next; // Point to next node
     }
 
+	// Add remaining nodes to placeholder
     if (list1)
     {
-        tail->next = list1;
-        list1->last = tail;
+        current->next = list1; // Add rest to the merged list
+        list1->last = current; // Update remaining node to point to the merged list
     }
     else if (list2)
     {
-        tail->next = list2;
-        list2->last = tail;
+        current->next = list2; // Add rest to the merged list
+        list2->last = current; // Update remaining node to point to the merged list
     }
-
-    return dummy.next;
+	
+    return dummy.next; // Points to first node in sorted list
 }
