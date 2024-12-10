@@ -5,7 +5,8 @@
 #include "com.h"
 
 #define LOG_FILE "seq.log"
-#define NODE_COUNT 10000000
+
+FILE *log_file;
 
 int main();
 

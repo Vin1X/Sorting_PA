@@ -11,17 +11,16 @@ void *ThrdFunc(void *arg)
 {
     ThreadData *data = (ThreadData *)arg;
 
-    // Sort
     clock_t start_time = clock();
     Sort(&data->head);
     clock_t end_time = clock();
 
-    // Calculate duration
     double duration = (double)(end_time - start_time) / CLOCKS_PER_SEC;
 
-    // Logging
     pthread_mutex_lock(&mutex);
     fprintf(log_file, "Thread id: %d\n", data->id);
+    fprintf(log_file, "Start time: %.2f seconds\n", start_time);
+    fprintf(log_file, "End time: %.2f seconds\n", end_time);
     fprintf(log_file, "Sort duration: %.2f seconds\n", duration);
     pthread_mutex_unlock(&mutex);
 
@@ -33,10 +32,8 @@ void *ThrdFunc(void *arg)
 
 int main()
 {
-    // Create file
     log_file = fopen(LOG_FILE, "w");
 
-    // Create list
     printf("Generating list with %d nodes...\n", NODE_COUNT);
     Node *list = Gen(NODE_COUNT);
     Node *sublists[THREAD_COUNT];
@@ -101,7 +98,9 @@ int main()
     // Logging
     fprintf(log_file, "Amount of nodes: %d\n", NODE_COUNT);
     fprintf(log_file, "Threads: %d\n", THREAD_COUNT);
-    fprintf(log_file, "Sort duration: %.2f seconds\n", duration);
+    fprintf(log_file, "Total start time: %.2f seconds\n", start_time);
+    fprintf(log_file, "Total end time: %.2f seconds\n", end_time);
+    fprintf(log_file, "Total sort duration: %.2f seconds\n", duration);
     fclose(log_file);
 
     // Debugging
@@ -113,11 +112,11 @@ int main()
 }
 
 /**
- * This function merges/sorts 2 double chained linked lists.
+ * This function merges/sorts 2 double linked lists.
  * For ease we make a dummy of type Node as a placeholder
  * and current with a pointer on the dummy Node.
  * We also ensure that the double linked list stays consistent.
- * 
+ *
  * Parameters:
  *    Node *list1 Pointer to sorted/unsorted list
  *    Node *list2 Pointer to sorted/unsorted list
@@ -127,30 +126,30 @@ int main()
  */
 Node *merge_lists(Node *list1, Node *list2)
 {
-    Node dummy; // Placeholder
+    Node dummy;             // Placeholder
     Node *current = &dummy; // Pointer to dummy node
-    dummy.next = NULL; // Make sure next node is empty
+    dummy.next = NULL;      // Make sure next node is empty
 
-	// This runs until one or both lists are empty
+    // This runs until one or both lists are empty
     while (list1 && list2)
     {
-		// Check which node has the smaller or equal value and attach it to the merged list
+        // Check which node has the smaller or equal value and attach it to the merged list
         if (list1->data <= list2->data)
         {
             current->next = list1; // Add node to placeholder
             list1->last = current; // Update last node to placeholder
-            list1 = list1->next; // Point to next node
+            list1 = list1->next;   // Point to next node
         }
         else
         {
             current->next = list2; // Add node to placeholder
             list2->last = current; // Update last node to placeholder
-            list2 = list2->next; // Point to next node
+            list2 = list2->next;   // Point to next node
         }
         current = current->next; // Point to next node
     }
 
-	// Add remaining nodes to placeholder
+    // Add remaining nodes to placeholder
     if (list1)
     {
         current->next = list1; // Add rest to the merged list
@@ -161,6 +160,6 @@ Node *merge_lists(Node *list1, Node *list2)
         current->next = list2; // Add rest to the merged list
         list2->last = current; // Update remaining node to point to the merged list
     }
-	
+
     return dummy.next; // Points to first node in sorted list
 }

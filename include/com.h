@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include "rand_z.h"
 
+#define NODE_COUNT 1000
+
+// Double linked list
 typedef struct Node
 {
     int data;

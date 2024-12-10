@@ -6,7 +6,6 @@
 #include "com.h"
 
 #define LOG_FILE "par.log"
-#define NODE_COUNT 10000000
 #define THREAD_COUNT 4
 
 FILE *log_file;

@@ -64,6 +64,15 @@ void Sort(Node **head_ref)
     *head_ref = sorted_head;
 }
 
+/**
+ * This function generates nodes and allocates space
+ *
+ * Parameters:
+ *  int count Amount of nodes which should be generated
+ *
+ * Returns:
+ *  Node *head Starting address of list
+ */
 Node *Gen(int count)
 {
     Node *head = NULL;
@@ -97,33 +106,12 @@ Node *Reserve()
 
 void ListOut(Node *head, int start_node, int end_node)
 {
-    if (!head)
-    {
-        return;
-    }
-
-    int total_nodes = 0;
+    int index = 0;
     Node *current = head;
     while (current)
     {
-        total_nodes++;
-        current = current->next;
-    }
 
-    if (start_node < 1 || start_node > total_nodes)
-    {
-        start_node = 1;
-    }
-    if (end_node < 1 || end_node > total_nodes)
-    {
-        end_node = total_nodes;
-    }
-
-    current = head;
-    int index = 1;
-    while (current && index <= end_node)
-    {
-        if (index >= start_node)
+        if ((index >= start_node && index <= end_node) || start_node >= NODE_COUNT || end_node > NODE_COUNT)
         {
             printf("Node %d: %d\n", index, current->data);
         }
