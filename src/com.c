@@ -1,78 +1,43 @@
 #include "../include/com.h"
 
-void Sort(Node **head_ref)
+/**
+ * This is a implementation of the merge sort in O(n log n)
+ */
+void Sort(Node **list_head)
 {
-    Node *head = *head_ref;
+    Node *head = *list_head;
 
-    if (!head || !head->next)
+    if (head && head->next)
     {
-        return;
-    }
+        Node *slow = head;
+        Node *fast = head->next;
 
-    Node *slow = head;
-    Node *fast = head->next;
-    while (fast && fast->next)
-    {
-        slow = slow->next;
-        fast = fast->next->next;
-    }
-
-    Node *mid = slow->next;
-    slow->next = NULL;
-    if (mid)
-    {
-        mid->last = NULL;
-    }
-
-    Sort(&head);
-    Sort(&mid);
-
-    Node dummy = {0, NULL, NULL};
-    Node *tail = &dummy;
-
-    Node *left = head;
-    Node *right = mid;
-
-    while (left && right)
-    {
-        if (left->data < right->data)
+        // Find middle node
+        while (fast && fast->next)
         {
-            tail->next = left;
-            left->last = tail;
-            left = left->next;
+            slow = slow->next;
+            fast = fast->next->next;
         }
-        else
+
+        // Split mid node
+        Node *mid = slow->next;
+        slow->next = NULL;
+        if (mid)
         {
-            tail->next = right;
-            right->last = tail;
-            right = right->next;
+            mid->last = NULL;
         }
-        tail = tail->next;
-    }
 
-    tail->next = (left) ? left : right;
-    if (tail->next)
-    {
-        tail->next->last = tail;
-    }
+        // Recursive call
+        Sort(&head);
+        Sort(&mid);
 
-    Node *sorted_head = dummy.next;
-    if (sorted_head)
-    {
-        sorted_head->last = NULL;
+        // Merge both lists
+        Node *merged = merge_lists(head, mid);
+
+        *list_head = merged;
     }
-    *head_ref = sorted_head;
 }
 
-/**
- * This function generates nodes and allocates space
- *
- * Parameters:
- *  int count Amount of nodes which should be generated
- *
- * Returns:
- *  Node *head Starting address of list
- */
 Node *Gen(int count)
 {
     Node *head = NULL;
@@ -98,6 +63,9 @@ Node *Gen(int count)
 Node *Reserve()
 {
     Node *node = (Node *)malloc(sizeof(Node));
+    if (node)
+    {
+    }
     node->data = RandZ(1 + RandZ(2) % 9);
     node->next = NULL;
     node->last = NULL;
@@ -110,8 +78,7 @@ void ListOut(Node *head, int start_node, int end_node)
     Node *current = head;
     while (current)
     {
-
-        if ((index >= start_node && index <= end_node) || start_node >= NODE_COUNT || end_node > NODE_COUNT)
+        if ((index >= start_node && index <= end_node) || start_node >= NODE_COUNT || end_node > NODE_COUNT || start_node < 0 || start_node > end_node)
         {
             printf("Node %d: %d\n", index, current->data);
         }
@@ -128,4 +95,54 @@ void ListFree(Node *head)
         head = head->next;
         free(temp);
     }
+}
+
+/**
+ * This function merges/sorts 2 double linked lists and is part of the merge sort.
+ * For ease we make a dummy as a placeholder.
+ * We also ensure that the double linked list stays consistent.
+ *
+ * Parameters:
+ *    Node *left Pointer to sorted/unsorted list
+ *    Node *right Pointer to sorted/unsorted list
+ *
+ * Returns:
+ *    Node* Pointer to the head of the merged list
+ */
+Node *merge_lists(Node *left, Node *right)
+{
+    Node dummy;             // Placeholder
+    Node *current = &dummy; // Pointer to dummy node
+    dummy.next = NULL;      // Make sure next node is empty
+
+    while (left && right)
+    {
+        // Check which node has the smaller or equal value and attach it to the merged list
+        if (left->data <= right->data)
+        {
+            current->next = left;
+            left->last = current;
+            left = left->next;
+        }
+        else
+        {
+            current->next = right;
+            right->last = current;
+            right = right->next;
+        }
+        current = current->next; // Point to next node
+    }
+
+    // Add remaining nodes to placeholder
+    if (left)
+    {
+        current->next = left;
+        left->last = current;
+    }
+    else if (right)
+    {
+        current->next = right;
+        right->last = current;
+    }
+    return dummy.next;
 }

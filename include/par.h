@@ -1,16 +1,16 @@
 #ifndef PAR_H
 #define PAR_H
 
-#include <time.h>
 #include <pthread.h>
 #include "com.h"
 
-#define LOG_FILE "par.log"
+#define LOG_FILE "par.log" // File name
 #define THREAD_COUNT 4
 
 FILE *log_file;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
+// Data for each thread
 typedef struct
 {
     Node *head;
@@ -18,6 +18,5 @@ typedef struct
 } ThreadData;
 
 int main();
-Node *merge_lists(Node *list1, Node *list2);
 
 #endif

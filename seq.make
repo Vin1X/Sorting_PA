@@ -8,7 +8,7 @@ $(SEQ_TARGET): $(SEQ_TARGET).o $(COM_TARGET).o $(RAND_TARGET).o
 $(SEQ_TARGET).o: src/$(SEQ_TARGET).c include/$(SEQ_TARGET).h
 	gcc -c -o $(SEQ_TARGET).o src/$(SEQ_TARGET).c
 
-$(COM_TARGET).o: src/$(COM_TARGET).c include/$(SEQ_TARGET).h
+$(COM_TARGET).o: src/$(COM_TARGET).c include/$(COM_TARGET).h
 	gcc -c -o $(COM_TARGET).o src/$(COM_TARGET).c
 
 $(RAND_TARGET).o: src/$(RAND_TARGET).c include/$(RAND_TARGET).h

@@ -1,5 +1,6 @@
 #ifndef Rand_z
 #define Rand_z
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
